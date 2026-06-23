@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة رفع ومتابعة المودات</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --primary-color: #38b000;
+            --primary-hover: #007200;
+            --text-color: #ffffff;
+            --text-muted: #aaaaaa;
+            --border-color: #333333;
+            --warning-color: #ccff33;
+            --warning-bg: #2b2e14;
+            --success-color: #38b000;
+            --success-bg: #142e14;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 40px;
+        }
+
+        /* شريط التنقل العلوي */
+        nav {
+            background-color: var(--container-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: 1px solid transparent;
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .nav-btn.active {
+            background-color: var(--primary-color);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .nav-btn:hover:not(.active) {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* الحاويات الصفحات */
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* شبكة المودات في الرئيسية */
+        .mods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .mod-card {
+            background-color: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .mod-title {
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+
+        .mod-desc {
+            color: var(--text-muted);
+            font-size: 14px;
+            flex-grow: 1;
+        }
+
+        .download-link {
+            display: inline-block;
+            background-color: #222;
+            color: var(--primary-color);
+            text-align: center;
+            padding: 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            border: 1px solid var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* الفورم ولوحات التحكم */
+        .form-section, .list-section {
+            background-color: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            background-color: #121212;
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 6px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* جداول المتابعة والمراجعة */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: right;
+        }
+
+        th {
+            background-color: #151515;
+            color: var(--primary-color);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background-color: var(--warning-bg);
+            color: var(--warning-color);
+        }
+
+        .status-approved {
+            background-color: var(--success-bg);
+            color: var(--success-color);
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .approve-btn {
+            background-color: var(--success-color);
+            color: black;
+        }
+
+        .empty-message {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Ghost Mods 🎮</div>
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="switchPage('home')">الرئيسية 🏠</button>
+            <button class="nav-btn" onclick="switchPage('upload-panel')">صفحة الرفع والمتابعة 📥</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <div id="home" class="page active">
+            <h2>المودات والإضافات المعتمدة</h2>
+            <div id="main-mods-grid" class="mods-grid">
+                </div>
+        </div>
+
+        <div id="upload-panel" class="page">
+            
+            <div class="form-section">
+                <h3>إرسال مود جديد للمراجعة 🚀</h3>
+                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">سيتم فحص الملفات من قبل الأونر قبل نشرها للعامة.</p>
+                <form id="upload-form" onsubmit="handleUpload(event)">
+                    <div class="form-group">
+                        <label>اسم المود:</label>
+                        <input type="text" id="mod-name" required placeholder="مثال: Ghost Pack Optimization">
+                    </div>
+                    <div class="form-group">
+                        <label>وصف المود:</label>
+                        <textarea id="mod-desc" rows="3" required placeholder="اكتب شرحاً مختصراً للمود ومميزاته..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>رابط تحميل المود:</label>
+                        <input type="url" id="mod-link" required placeholder="https://download-link.com">
+                    </div>
+                    <button type="submit" class="submit-btn">إرسال المود للأونر 📤</button>
+                </form>
+            </div>
+
+            <div class="list-section">
+                <h3>متابعة حالة موداتي ⏳</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اسم المود</th>
+                            <th>الحالة</th>
+                            <th>الرابط المرفوع</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-mods-table">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="list-section" style="border-color: var(--primary-color);">
+                <h3 style="color: var(--primary-color);">لوحة تحكم الأونر (المراجعة والاعتماد) 👑</h3>
+                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;">هذه اللوحة تظهر لك بصفتك الأونر لتتحكم في قبول الملفات وتحويلها للصفحة الرئيسية.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اسم المود</th>
+                            <th>الوصف</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="owner-review-table">
+                        </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // قاعدة بيانات وهمية في الذاكرة (تخزن البيانات مؤقتاً أثناء تصفح الموقع)
+        // في المشاريع الكبيرة تُربط بـ Firebase أو قاعدة بيانات حقيقية
+        let modsData = [
+            {
+                id: 1,
+                name: "Sodium Fabric Patch (Intel HD 2500)",
+                desc: "تعديل مخصص لرفع فريمات ماينكرافت للأجهزة الضعيفة جداً وكروت الشاشة المدمجة.",
+                link: "https://example.com/download/sodium",
+                status: "approved" // معتمد وجاهز للظهور للجميع
+            },
+            {
+                id: 2,
+                name: "Ghost Pack Shaders V1",
+                desc: "مود شيدرز خفيف جداً متوافق مع تحديث 26.1.1 لتجنب اللاق.",
+                link: "https://example.com/download/shaders",
+                status: "pending" // تحت المراجعة (يراه الأونر والرافع فقط)
+            }
+        ];
+
+        // التبديل بين الصفحات
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            event.target.classList.add('active');
+            
+            // تحديث العرض عند الانتقال
+            renderData();
+        }
+
+        // التعامل مع رفع المودات الجديدة
+        function handleUpload(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('mod-name').value;
+            const desc = document.getElementById('mod-desc').value;
+            const link = document.getElementById('mod-link').value;
+
+            const newMod = {
+                id: Date.now(),
+                name: name,
+                desc: desc,
+                link: link,
+                status: "pending" // يبدأ دائماً كـ "تحت المراجعة"
+            };
+
+            modsData.push(newMod);
+            alert("تم إرسال الملف بنجاح! هو الآن تحت المراجعة من قبل الأونر ⏳");
+            
+            // إعادة ضبط الفورم وتحديث البيانات
+            document.getElementById('upload-form').reset();
+            renderData();
+        }
+
+        // موافقة الأونر على المود ليظهر على الرئيسية
+        function approveMod(id) {
+            const mod = modsData.find(m => m.id === id);
+            if (mod) {
+                mod.status = "approved";
+                renderData();
+                alert(`تمت الموافقة على مود "${mod.name}" ونشره في الرئيسية بنجاح!`);
+            }
+        }
+
+        // عرض وتحديث محتويات الجداول والقائمة الرئيسية
+        function renderData() {
+            const mainGrid = document.getElementById('main-mods-grid');
+            const userTable = document.getElementById('user-mods-table');
+            const ownerTable = document.getElementById('owner-review-table');
+
+            // 1. تحديث الصفحة الرئيسية (المودات المقبولة فقط)
+            mainGrid.innerHTML = '';
+            const approvedMods = modsData.filter(m => m.status === 'approved');
+            
+            if (approvedMods.length === 0) {
+                mainGrid.innerHTML = '<p class="empty-message">لا توجد مودات معتمدة حالياً.</p>';
+            } else {
+                approvedMods.forEach(mod => {
+                    mainGrid.innerHTML += `
+                        <div class="mod-card">
+                            <div class="mod-title">${mod.name}</div>
+                            <div class="mod-desc">${mod.desc}</div>
+                            <a href="${mod.link}" target="_blank" class="download-link">تحميل المود 📥</a>
+                        </div>
+                    `;
+                });
+            }
+
+            // 2. تحديث جدول الناشر (يتابع فيه ملفاته)
+            userTable.innerHTML = '';
+            if (modsData.length === 0) {
+                userTable.innerHTML = '<tr><td colspan="3" class="empty-message">لم تقم برفع أي ملفات بعد.</td></tr>';
+            } else {
+                modsData.forEach(mod => {
+                    const statusText = mod.status === 'approved' ? 'مقبول ونُشر ✅' : 'تحت المراجعة ⏳';
+                    const statusClass = mod.status === 'approved' ? 'status-approved' : 'status-pending';
+                    userTable.innerHTML += `
+                        <tr>
+                            <td>${mod.name}</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td><a href="${mod.link}" target="_blank" style="color: #38b000;">رابط الملف</a></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // 3. لوحة تحكم الأونر (يعرض الملفات المعلقة 'pending' فقط ليوافق عليها)
+            ownerTable.innerHTML = '';
+            const pendingMods = modsData.filter(m => m.status === 'pending');
+            
+            if (pendingMods.length === 0) {
+                ownerTable.innerHTML = '<tr><td colspan="3" class="empty-message">لا توجد طلبات معلقة حالياً مريحة! 😎</td></tr>';
+            } else {
+                pendingMods.forEach(mod => {
+                    ownerTable.innerHTML += `
+                        <tr>
+                            <td><strong>${mod.name}</strong></td>
+                            <td style="color: #aaa; font-size: 13px;">${mod.desc}</td>
+                            <td>
+                                <button class="action-btn approve-btn" onclick="approveMod(${mod.id})">موافقة ونشر ✅</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        // تشغيل العرض التلقائي عند أول فتح للموقع
+        window.onload = renderData;
+    </script>
+</body>
+</html>
